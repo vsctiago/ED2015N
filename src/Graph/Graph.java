@@ -206,7 +206,7 @@ public class Graph<T> implements GraphADT<T> {
 
     @Override
     public Iterator<T> iteratorShortestPath(T startVertex, T targetVertex) {
-        UnorderedArrayList<T> resultList = new UnorderedArrayList<>();
+        ArrayUnorderedList<T> resultList = new ArrayUnorderedList<>();
         if (isEmpty() == true) {
             return resultList.iterator();
         }
@@ -227,7 +227,7 @@ public class Graph<T> implements GraphADT<T> {
      */
     protected Iterator<T> iteratorShortestPath(int startIndex, int targetIndex) throws Exception {
 
-        UnorderedArrayList<T> resultList = new UnorderedArrayList<>();
+        ArrayUnorderedList<T> resultList = new ArrayUnorderedList<>();
         if (!indexIsValid(startIndex) || !indexIsValid(targetIndex)) {
             return resultList.iterator();
         }
@@ -252,7 +252,7 @@ public class Graph<T> implements GraphADT<T> {
         int[] pathLength = new int[numVertices];
         int[] predecessor = new int[numVertices];
         LinkedQueue<Integer> traversalQueue = new LinkedQueue<>();
-        UnorderedArrayList<Integer> resultList = new UnorderedArrayList<>();
+        ArrayUnorderedList<Integer> resultList = new ArrayUnorderedList<>();
         if (!indexIsValid(startIndex) || !indexIsValid(targetIndex) || (startIndex == targetIndex)) {
             return resultList.iterator();
         }
