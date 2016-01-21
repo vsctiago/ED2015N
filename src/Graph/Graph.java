@@ -9,6 +9,7 @@ import ArrayList.UnorderedArrayList;
 import LinkedQueue.LinkedQueue;
 import LinkedStack.EmptyCollectionException;
 import LinkedStack.LinkedStack;
+import Node.LinearNode;
 import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -212,14 +213,58 @@ public class Graph<T> implements GraphADT<T> {
 
     @Override
     public Iterator iteratorShortestPath(T startVertex, T targetVertex) {
-        int pesos[][] = new int[this.numVertices][this.numVertices];
-        
-        
-        
-        
-        
-        
-        return null;
+        if(startVertex!=null && targetVertex!=null){
+    
+        }
+        int startIndex = getIndex(startVertex);
+        int index = getIndex(startVertex);
+        int targetIndex = getIndex(targetVertex);
+        int[] pathLength = new int[numVertices];
+        int[] predecessor = new int[numVertices];
+        LinkedQueue<Integer> traversalQueue = new LinkedQueue<Integer>();
+        UnorderedArrayList<Integer> resultList = new UnorderedArrayList<Integer>();
+        if (!indexIsValid(startIndex) || !indexIsValid(targetIndex) || (startIndex == targetIndex)) {
+            return resultList.iterator();
+        }
+        boolean[] visited = new boolean[numVertices];
+        for (int i = 0; i < numVertices; i++) {
+            visited[i] = false;
+        }
+        traversalQueue.enqueue(new Integer(startIndex));
+        //inicializa arrays
+        visited[startIndex] = true;
+        pathLength[startIndex] = 0;
+        predecessor[startIndex] = -1;
+        //enquanto a fila nao estiver vazia e index diferente do target
+        while (!traversalQueue.isEmpty() && (index != targetIndex)) {
+            //buscar o index a fila
+            index = (traversalQueue.dequeue()).intValue();
+            //for percorre vertices do index
+            for (int i = 0; i < numVertices; i++) {
+                //se existir ligaçao do index para o i e ainda nao foi visitado
+                if (adjMatrix[index][i] && !visited[i]) {
+                    //atribui a distancia do index para o i
+                    pathLength[i] = pathLength[index] + 1;
+                    predecessor[i] = index;
+                    traversalQueue.enqueue(new Integer(i));
+                    visited[i] = true;
+                }
+            }
+        }
+        if (index != targetIndex) {
+            return resultList.iterator();
+        }
+        LinkedStack<Integer> stack = new LinkedStack<Integer>();
+        index = targetIndex;
+        stack.push(new LinearNode<Integer>(new Integer(index)));
+        do {
+            index = predecessor[index];
+            stack.push(new LinearNode<Integer>(new Integer(index)));
+        } while (index != startIndex);
+        while (!stack.isEmpty()) {
+            resultList.addRear(((Integer) stack.pop()));
+        }
+        return resultList.iterator();
     }
 
     @Override
