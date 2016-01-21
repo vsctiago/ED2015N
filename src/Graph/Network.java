@@ -6,7 +6,6 @@
 package Graph;
 
 import Heap.LinkedHeap;
-import TwoTypePair.TwoTypePair;
 
 /**
  *
@@ -35,8 +34,27 @@ public class Network<T> extends Graph<T> implements NetworkADT<T> {
 
     @Override
     public double shortestPathWeight(T vertex1, T vertex2) {
+        int startIndex = getIndex(vertex1);
+        int destIndex = getIndex(vertex2);
+        int[] predecessor = new int[this.numVertices];
+        double[] pathlenght = new double[this.numVertices];
+        boolean[] visited = new boolean[this.numVertices];
+        for (int i = 0; i < this.numVertices; i++) {
+            visited[i] = false;
+        }
         
         
+        visited[0] = true;
+        pathlenght[0] = 0;
+        predecessor[0] = -1;
+        int index = startIndex;
+        
+        
+        for (int i = 0; i < this.numVertices; i++) {
+            if(this.adjMatrix[index][i]){
+                pathlenght[i] = this.wAdjMatrix[index][i];
+            }
+        }
         
         return 0;
     }
