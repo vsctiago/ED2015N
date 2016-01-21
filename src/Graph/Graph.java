@@ -14,7 +14,6 @@ import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-
 /**
  *
  * @author n_fon
@@ -25,7 +24,7 @@ public class Graph<T> implements GraphADT<T> {
     protected int numVertices; // number of vertices in the graph
     protected boolean[][] adjMatrix; // adjacency matrix
     protected T[] vertices; // values of vertices
-    
+
     /**
      * Creates an empty graph.
      */
@@ -160,11 +159,10 @@ public class Graph<T> implements GraphADT<T> {
 
     }
 
-
     @Override
     public Iterator iteratorDFS(T startVertex) {
         int startIndex = getIndex(startVertex);
-        
+
         Integer x = null;
         boolean found;
         LinkedStack<Integer> traversalStack = new LinkedStack<Integer>();
@@ -181,11 +179,11 @@ public class Graph<T> implements GraphADT<T> {
         resultList.addRear(vertices[startIndex]);
         visited[startIndex] = true;
         
+        
         while (!traversalStack.isEmpty()) {
             try {
                 x = traversalStack.peek();
             } catch (EmptyCollectionException ex) {
-                Logger.getLogger(Graph.class.getName()).log(Level.SEVERE, null, ex);
             }
             found = false;
             /**
@@ -204,17 +202,16 @@ public class Graph<T> implements GraphADT<T> {
                 try {
                     traversalStack.pop();
                 } catch (EmptyCollectionException ex) {
-                    Logger.getLogger(Graph.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         }
         return resultList.iterator();
     }
 
-@Override
-    public Iterator<T> iteratorShortestPath(T startVertex, T targetVertex){
+    @Override
+    public Iterator<T> iteratorShortestPath(T startVertex, T targetVertex) {
         UnorderedArrayList<T> resultList = new UnorderedArrayList<>();
-        if (isEmpty() == true) {   
+        if (isEmpty() == true) {
             return resultList.iterator();
         }
         try {
@@ -308,16 +305,16 @@ public class Graph<T> implements GraphADT<T> {
 
     @Override
     public boolean isConnected() { //É CONEXO??
-        int count=0;
-        if(this.isEmpty()){
-           return false; 
+        int count = 0;
+        if (this.isEmpty()) {
+            return false;
         }
         Iterator<T> it = iteratorDFS(this.vertices[0]);
-        while(it.hasNext()){
+        while (it.hasNext()) {
             it.next();
             count++;
         }
-        if(count==this.numVertices){
+        if (count == this.numVertices) {
             return true;
         }
         return false;
