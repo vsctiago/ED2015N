@@ -5,8 +5,7 @@
  */
 package Graph;
 
-import Graph.Graph;
-import Graph.NetworkADT;
+import Heap.LinkedHeap;
 
 /**
  *
@@ -48,15 +47,15 @@ public class Network<T> extends Graph<T> implements NetworkADT<T> {
         int index;
         double weight;
         int[] edge = new int[2];
-        Heap<Double> minHeap = new Heap<Double>();
+        LinkedHeap<Double> minHeap = new LinkedHeap<Double>();
         Network<T> resultGraph = new Network<T>();
         if (isEmpty() || !isConnected()) {
             return resultGraph;
         }
-        resultGraph.adjMatrix = new double[numVertices][numVertices];
+        resultGraph.wAdjMatrix = new double[numVertices][numVertices];
         for (int i = 0; i < numVertices; i++) {
             for (int j = 0; j < numVertices; j++) {
-                resultGraph.adjMatrix[i][j] = Double.POSITIVE_INFINITY;
+                resultGraph.wAdjMatrix[i][j] = Double.POSITIVE_INFINITY;
             }
         }
         resultGraph.vertices = (T[]) (new Object[numVertices]);
@@ -73,7 +72,7 @@ public class Network<T> extends Graph<T> implements NetworkADT<T> {
          * Add all edges, which are adjacent to the starting vertex, to the heap
          */
         for (int i = 0; i < numVertices; i++) {
-            minHeap.addElement(new Double(adjMatrix[0][i]));
+            minHeap.addElement(new Double(wAdjMatrix[0][i]));
         }
         while ((resultGraph.size() < this.size()) && !minHeap.isEmpty()) {
             /**
@@ -104,15 +103,34 @@ public class Network<T> extends Graph<T> implements NetworkADT<T> {
              * the heap
              */
             for (int i = 0; i < numVertices; i++) {
-                if (!visited[i] && (this.adjMatrix[i][index]
+                if (!visited[i] && (this.wAdjMatrix[i][index]
                         < Double.POSITIVE_INFINITY)) {
                     edge[0] = index;
-                    edge[1] = I;
-                    minHeap.addElement(new Double(adjMatrix[index][i]));
+                    edge[1] = i;
+                    minHeap.addElement(new Double(wAdjMatrix[index][i]));
                 }
             }
         }
         return resultGraph;
     }
 
+    protected int[] getEdgeWithWeightOf(double weight, boolean[] visited) {
+        int[] edge = new int[2];
+        for (int i = 0; i < numVertices; i++) {
+            for (int j = 0; j < numVertices; j++) {
+                if ((wAdjMatrix[i][j] == weight) && (visited[i] ^ visited[j])) {
+                    edge[0] = i;
+                    edge[1] = j;
+                    return edge;
+                }
+            }
+        }
+
+        /**
+         * Will only get to here if a valid edge is not found
+         */
+        edge[0] = -1;
+        edge[1] = -1;
+        return edge;
+    }
 }
