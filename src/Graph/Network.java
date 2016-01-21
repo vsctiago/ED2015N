@@ -6,6 +6,7 @@
 package Graph;
 
 import Heap.LinkedHeap;
+import TwoTypePair.TwoTypePair;
 
 /**
  *
@@ -34,8 +35,6 @@ public class Network<T> extends Graph<T> implements NetworkADT<T> {
 
     @Override
     public double shortestPathWeight(T vertex1, T vertex2) {
-        
-        
         
         
         
