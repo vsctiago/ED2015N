@@ -34,7 +34,12 @@ public class Network<T> extends Graph<T> implements NetworkADT<T> {
 
     @Override
     public double shortestPathWeight(T vertex1, T vertex2) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        
+        
+        
+        
+        
+        return 0;
     }
 
     /**
