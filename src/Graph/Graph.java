@@ -5,7 +5,7 @@
  */
 package Graph;
 
-import ArrayList.UnorderedArrayList;
+import ArrayList.ArrayUnorderedList;
 import LinkedQueue.LinkedQueue;
 import LinkedStack.EmptyCollectionException;
 import LinkedStack.LinkedStack;
@@ -133,7 +133,7 @@ public class Graph<T> implements GraphADT<T> {
         int startIndex = getIndex(startVertex);
         Integer x;
         LinkedQueue<Integer> traversalQueue = new LinkedQueue<Integer>();
-        UnorderedArrayList<T> resultList = new UnorderedArrayList<T>();
+        ArrayUnorderedList<T> resultList = new ArrayUnorderedList<T>();
         if (!indexIsValid(startIndex)) {
             return resultList.iterator();
         }
@@ -166,7 +166,7 @@ public class Graph<T> implements GraphADT<T> {
         Integer x = null;
         boolean found;
         LinkedStack<Integer> traversalStack = new LinkedStack<Integer>();
-        UnorderedArrayList<T> resultList = new UnorderedArrayList<T>();
+        ArrayUnorderedList<T> resultList = new ArrayUnorderedList<T>();
         boolean[] visited = new boolean[numVertices];
         if (!indexIsValid(startIndex)) {
             return resultList.iterator();

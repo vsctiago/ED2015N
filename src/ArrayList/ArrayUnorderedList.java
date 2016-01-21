@@ -9,13 +9,13 @@ package ArrayList;
  *
  * @author n_fon
  */
-public class UnorderedArrayList<T> extends ArrayList<T> implements UnorderedListADT<T> {
+public class ArrayUnorderedList<T> extends ArrayList<T> implements UnorderedListADT<T> {
 
-    public UnorderedArrayList(int size) {
+    public ArrayUnorderedList(int size) {
         super(size);
     }
 
-    public UnorderedArrayList() {
+    public ArrayUnorderedList() {
         super();
     }
 
