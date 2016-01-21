@@ -211,18 +211,55 @@ public class Graph<T> implements GraphADT<T> {
         return resultList.iterator();
     }
 
-    @Override
-    public Iterator iteratorShortestPath(T startVertex, T targetVertex) {
-        if(startVertex!=null && targetVertex!=null){
-    
+@Override
+    public Iterator<T> iteratorShortestPath(T startVertex, T targetVertex){
+        UnorderedArrayList<T> resultList = new UnorderedArrayList<>();
+        if (isEmpty() == true) {   
+            return resultList.iterator();
         }
-        int startIndex = getIndex(startVertex);
-        int index = getIndex(startVertex);
-        int targetIndex = getIndex(targetVertex);
+        try {
+            return iteratorShortestPath(getIndex(startVertex), getIndex(targetVertex));
+        } catch (Exception ex) {
+            return resultList.iterator();
+        }
+    }
+
+    /**
+     * A Iterator for shortest path of this graph
+     *
+     * @param startIndex, the index of the start vertex
+     * @param targetIndex, the index of the target vertex
+     * @return an iterator with the vertices of the shortest path
+     * @throws Exception, if the graph is empty
+     */
+    protected Iterator<T> iteratorShortestPath(int startIndex, int targetIndex) throws Exception {
+
+        UnorderedArrayList<T> resultList = new UnorderedArrayList<>();
+        if (!indexIsValid(startIndex) || !indexIsValid(targetIndex)) {
+            return resultList.iterator();
+        }
+
+        Iterator<Integer> it = (Iterator<Integer>) iteratorShortestPathIndex(startIndex, targetIndex);
+        while (it.hasNext()) {
+            resultList.addRear(vertices[((Integer) it.next()).intValue()]);
+        }
+        return resultList.iterator();
+    }
+
+    /**
+     * A Iterator for shortest path of this graph
+     *
+     * @param startIndex, the index of the start vertex
+     * @param targetIndex, the index of the target vertex
+     * @return an iterator with the vertices of the shortest path
+     * @throws Exception, if the graph is empty
+     */
+    protected Iterator<Integer> iteratorShortestPathIndex(int startIndex, int targetIndex) throws Exception {
+        int index = startIndex;
         int[] pathLength = new int[numVertices];
         int[] predecessor = new int[numVertices];
-        LinkedQueue<Integer> traversalQueue = new LinkedQueue<Integer>();
-        UnorderedArrayList<Integer> resultList = new UnorderedArrayList<Integer>();
+        LinkedQueue<Integer> traversalQueue = new LinkedQueue<>();
+        UnorderedArrayList<Integer> resultList = new UnorderedArrayList<>();
         if (!indexIsValid(startIndex) || !indexIsValid(targetIndex) || (startIndex == targetIndex)) {
             return resultList.iterator();
         }
@@ -231,19 +268,13 @@ public class Graph<T> implements GraphADT<T> {
             visited[i] = false;
         }
         traversalQueue.enqueue(new Integer(startIndex));
-        //inicializa arrays
         visited[startIndex] = true;
         pathLength[startIndex] = 0;
         predecessor[startIndex] = -1;
-        //enquanto a fila nao estiver vazia e index diferente do target
         while (!traversalQueue.isEmpty() && (index != targetIndex)) {
-            //buscar o index a fila
             index = (traversalQueue.dequeue()).intValue();
-            //for percorre vertices do index
             for (int i = 0; i < numVertices; i++) {
-                //se existir ligaçao do index para o i e ainda nao foi visitado
                 if (adjMatrix[index][i] && !visited[i]) {
-                    //atribui a distancia do index para o i
                     pathLength[i] = pathLength[index] + 1;
                     predecessor[i] = index;
                     traversalQueue.enqueue(new Integer(i));
@@ -254,12 +285,12 @@ public class Graph<T> implements GraphADT<T> {
         if (index != targetIndex) {
             return resultList.iterator();
         }
-        LinkedStack<Integer> stack = new LinkedStack<Integer>();
+        LinkedStack<Integer> stack = new LinkedStack<>();
         index = targetIndex;
-        stack.push(new LinearNode<Integer>(new Integer(index)));
+        stack.push(new Integer(index));
         do {
             index = predecessor[index];
-            stack.push(new LinearNode<Integer>(new Integer(index)));
+            stack.push(new Integer(index));
         } while (index != startIndex);
         while (!stack.isEmpty()) {
             resultList.addRear(((Integer) stack.pop()));
