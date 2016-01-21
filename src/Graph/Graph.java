@@ -9,11 +9,7 @@ import ArrayList.ArrayUnorderedList;
 import LinkedQueue.LinkedQueue;
 import LinkedStack.EmptyCollectionException;
 import LinkedStack.LinkedStack;
-import Node.LinearNode;
 import java.util.Iterator;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 /**
  *
  * @author n_fon
@@ -304,7 +300,7 @@ public class Graph<T> implements GraphADT<T> {
     }
 
     @Override
-    public boolean isConnected() { //É CONEXO??
+    public boolean isConnected() {
         int count = 0;
         if (this.isEmpty()) {
             return false;
