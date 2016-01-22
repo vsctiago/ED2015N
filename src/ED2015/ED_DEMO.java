@@ -22,60 +22,24 @@ public class ED_DEMO {
         a.addVertex("a");
         a.addVertex("b");
         a.addVertex("c");
-        a.addEdge("a", "b", 1.0);
-        a.addEdge("b", "c", 1.0);
-        
+        a.addVertex("d");
+        a.addVertex("e");
+        a.addVertex("f");
+        a.addEdge("a", "b", 2);
+        a.addEdge("b", "c", 5);
+        a.addEdge("c", "f", 3);
+        a.addEdge("a", "d", 2);
+        a.addEdge("d", "e", 4);
+        a.addEdge("e", "c", 2);
+        System.out.println(a.toString());
         //System.out.println(a.toString());
         
-        Iterator it = a.iteratorShortestPath("a", "c");
+        Iterator it = a.iteratorShortestPath("d", "f");
         
         while(it.hasNext()){
             System.out.println(it.next());
         }
-//        
-//        System.out.println("matrix lenght: " + matrix.length);
-//        for (int i = 0; i < a.size(); i++) {
-//            System.out.println("\n");
-//            for (int j = 0; j < a.size(); j++) {
-//                if(matrix[i][j]<Double.POSITIVE_INFINITY){
-//                    System.out.print("  " + matrix[i][j]);
-//                }else{
-//                    System.out.println("inf");
-//                }
-//                
-//            }
-//        }
-//        
-//        a.addVertex("d");
-//        a.addVertex("e");
-//        a.addVertex("f");
-//        
-//        a.addEdge("a", "b", 2);
-//        a.addEdge("b", "a", 2);
-//        a.addEdge("a", "d", 2);
-//        a.addEdge("d", "a", 2);
-//        
-//        a.addEdge("b", "c", 5);
-//        a.addEdge("c", "b", 5);
-//        a.addEdge("b", "e", 1);
-//        a.addEdge("e", "b", 1);
-//        
-//        a.addEdge("e", "c", 2);
-//        a.addEdge("c", "e", 2);
-//        a.addEdge("c", "f", 3);
-//        a.addEdge("f", "c", 3);
-//        
-//        a.addEdge("d", "e", 4);
-//        a.addEdge("e", "d", 4);
-        
-        
-        //double it = a.shortestPathWeight("a", "c");
-        
-//        while(it.hasNext()){
-//            System.out.println(it.next().toString());
-//        }
-        
-       
+
     }
     
 }
