@@ -6,6 +6,7 @@
 package ED2015;
 
 import ArrayList.ArrayUnorderedList;
+import Graph.Graph;
 import Graph.Network;
 import Heap.LinkedHeap;
 import LinkedQueue.LinkedQueue;
@@ -22,14 +23,16 @@ import java.util.logging.Logger;
  */
 public class RedeAutocarro<T> extends Graph<T> implements RedeAutocarroADT<T> {
 
+    protected Peso[][][] wAdjMatrix;
+    
     /**
      * ****************************************************************
      * Creates an empty network.
    *****************************************************************
      */
-    public Network() {
-        numVertices = 0;
-        this.adjMatrix = new double[DEFAULT_CAPACITY][DEFAULT_CAPACITY];
+    public RedeAutocarro() {
+        super();
+        this.wAdjMatrix = new Peso[DEFAULT_CAPACITY][DEFAULT_CAPACITY][DEFAULT_CAPACITY];
         this.vertices = (T[]) (new Object[DEFAULT_CAPACITY]);
     }
 
@@ -64,7 +67,7 @@ public class RedeAutocarro<T> extends Graph<T> implements RedeAutocarroADT<T> {
             result += "" + i + "\t";
 
             for (int j = 0; j < numVertices; j++) {
-                if (adjMatrix[i][j] < Double.POSITIVE_INFINITY) {
+                if (wAdjMatrix[i][j][0].getDistancia() < Double.POSITIVE_INFINITY) {
                     result += "1 ";
                 } else {
                     result += "0 ";
