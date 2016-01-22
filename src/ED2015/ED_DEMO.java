@@ -24,20 +24,28 @@ public class ED_DEMO {
         a.addVertex("c");
         a.addEdge("a", "b", 1.0);
         a.addEdge("b", "c", 1.0);
-        double[][] matrix = a.getMatrix();
-        System.out.println("matrix lenght: " + matrix.length);
-        for (int i = 0; i < a.size(); i++) {
-            System.out.println("\n");
-            for (int j = 0; j < a.size(); j++) {
-                if(matrix[i][j]<Double.POSITIVE_INFINITY){
-                    System.out.print("  " + matrix[i][j]);
-                }else{
-                    System.out.println("inf");
-                }
-                
-            }
-        }
         
+        //System.out.println(a.toString());
+        
+        Iterator it = a.iteratorShortestPath("a", "c");
+        
+        while(it.hasNext()){
+            System.out.println(it.next());
+        }
+//        
+//        System.out.println("matrix lenght: " + matrix.length);
+//        for (int i = 0; i < a.size(); i++) {
+//            System.out.println("\n");
+//            for (int j = 0; j < a.size(); j++) {
+//                if(matrix[i][j]<Double.POSITIVE_INFINITY){
+//                    System.out.print("  " + matrix[i][j]);
+//                }else{
+//                    System.out.println("inf");
+//                }
+//                
+//            }
+//        }
+//        
 //        a.addVertex("d");
 //        a.addVertex("e");
 //        a.addVertex("f");
@@ -61,12 +69,12 @@ public class ED_DEMO {
 //        a.addEdge("e", "d", 4);
         
         
-        double it = a.shortestPathWeight("a", "c");
+        //double it = a.shortestPathWeight("a", "c");
         
 //        while(it.hasNext()){
 //            System.out.println(it.next().toString());
 //        }
-        System.out.println(it);
+        
        
     }
     
