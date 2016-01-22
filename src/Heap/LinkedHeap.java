@@ -5,6 +5,10 @@
  */
 package Heap;
 
+import Exceptions.EmptyCollectionException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  *
  * @author Utilizador
@@ -190,10 +194,23 @@ public class LinkedHeap<T> extends LinkedBinaryTree<T>
         }
         node.element = temp;
     }
-
+    
+    public void removeAllElements(){
+        this.count=0;
+        this.root=null;
+        this.lastNode=null;
+    }
+    
+    
     @Override
     public T findMin() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if(!this.isEmpty()){
+            try {
+                return this.getRoot();
+            } catch (EmptyCollectionException ex) {
+            }
+        }
+        return null;
     }
     
     
