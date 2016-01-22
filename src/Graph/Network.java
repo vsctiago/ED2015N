@@ -24,8 +24,17 @@ public class Network<T> extends Graph<T> implements NetworkADT<T> {
     public Network() {
         super();
         this.wAdjMatrix = (new double[DEFAULT_CAPACITY][DEFAULT_CAPACITY]);
+        for (int i = 0; i < this.numVertices; i++) {
+            for (int j = 0; j < this.numVertices; j++) {
+                wAdjMatrix[i][j] = Double.POSITIVE_INFINITY;
+            }
+        }
     }
 
+    public double[][] getMatrix(){
+        return this.wAdjMatrix;
+    }
+    
     @Override
     public void addEdge(T vertex1, T vertex2, double weight) {
         addEdge(getIndex(vertex1), getIndex(vertex2), weight);
