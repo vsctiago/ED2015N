@@ -10,6 +10,8 @@ import Heap.LinkedHeap;
 import LinkedStack.EmptyCollectionException;
 import LinkedStack.LinkedStack;
 import java.util.Iterator;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -36,145 +38,182 @@ public class Network<T> extends Graph<T> implements NetworkADT<T> {
         }
     }
 
-    @Override
-    public double shortestPathWeight(T vertex1, T vertex2) {
-        int startIndex = getIndex(vertex1);
-        int destIndex = getIndex(vertex2);
-        int[] predecessor = new int[this.numVertices];
-        double[] pathlenght = new double[this.numVertices];
-        boolean[] visited = new boolean[this.numVertices];
-        for (int i = 0; i < this.numVertices; i++) {
-            visited[i] = false;
-        }
+   /******************************************************************
+     Returns the weight of the least weight path in the network.  
+     Returns positive infinity if no path is found.
+   ******************************************************************/
+   public double shortestPathWeight(int startIndex, int targetIndex)
+   {
+      double result = 0;
+      if (!indexIsValid(startIndex) || !indexIsValid(targetIndex))
+         return Double.POSITIVE_INFINITY;
 
-        visited[0] = true;
-        pathlenght[0] = 0;
-        predecessor[0] = -1;
-        int index = startIndex;
+      int index1, index2;
+      Iterator<Integer> it = iteratorShortestPathIndices(startIndex,
+                             targetIndex);
 
-        for (int i = 0; i < this.numVertices; i++) {
-            if (this.adjMatrix[index][i]) {
-                pathlenght[i] = this.wAdjMatrix[index][i];
-            }
-        }
+      if (it.hasNext())
+         index1 = ((Integer)it.next()).intValue();
+      else
+         return Double.POSITIVE_INFINITY;
 
-        return 0;
-    }
+      while (it.hasNext())
+      {
+         index2 = (it.next()).intValue();
+         result += wAdjMatrix[index1][index2];
+         index1 = index2;
+      }
+      
+      return result;
+   }
 
-    /**
-     * ****************************************************************
-     * Returns an iterator that contains the indices of the vertices that are in
-     * the shortest path between the two given vertices.
-   *****************************************************************
-     */
-    protected Iterator<Integer> iteratorShortestPathIndices(int startIndex, int targetIndex) {
-        int index;
-        double weight;
-        int[] predecessor = new int[numVertices];
-        LinkedHeap<Double> traversalMinHeap = new LinkedHeap<Double>();
-        ArrayUnorderedList<Integer> resultList
-                = new ArrayUnorderedList<Integer>();
-        LinkedStack<Integer> stack = new LinkedStack<Integer>();
+   /******************************************************************
+     Returns the weight of the least weight path in the network.  
+     Returns positive infinity if no path is found.
+   ******************************************************************/
+   public double shortestPathWeight(T startVertex, T targetVertex)
+   {
+      return shortestPathWeight(getIndex(startVertex),
+                                getIndex(targetVertex));
+   }
 
-        int[] pathIndex = new int[numVertices];
-        double[] pathWeight = new double[numVertices];
-        for (int i = 0; i < numVertices; i++) {
-            pathWeight[i] = Double.POSITIVE_INFINITY;
-        }
+       /******************************************************************
+     Returns an iterator that contains the indices of the vertices 
+     that are in the shortest path between the two given vertices.
+   ******************************************************************/
+   protected Iterator<Integer> iteratorShortestPathIndices
+                              (int startIndex, int targetIndex)
+   {
+      int index;
+      double weight;
+      int[] predecessor = new int[numVertices];
+      LinkedHeap<Double> traversalMinHeap = new LinkedHeap<Double>();
+      ArrayUnorderedList<Integer> resultList = 
+                                  new ArrayUnorderedList<Integer>();
+      LinkedStack<Integer> stack = new LinkedStack<Integer>();
 
-        boolean[] visited = new boolean[numVertices];
-        for (int i = 0; i < numVertices; i++) {
-            visited[i] = false;
-        }
+      int[] pathIndex = new int[numVertices];
+      double[] pathWeight = new double[numVertices];
+      for (int i = 0; i < numVertices; i++)
+         pathWeight[i] = Double.POSITIVE_INFINITY;
 
-        if (!indexIsValid(startIndex) || !indexIsValid(targetIndex)
-                || (startIndex == targetIndex) || isEmpty()) {
+      boolean[] visited = new boolean[numVertices];
+      for (int i = 0; i < numVertices; i++)
+         visited[i] = false;
+
+      if (!indexIsValid(startIndex) || !indexIsValid(targetIndex) || 
+                       (startIndex == targetIndex) || isEmpty())
+         return resultList.iterator();
+
+      pathWeight[startIndex] = 0;
+      predecessor[startIndex] = -1;      
+      visited[startIndex] = true;
+      weight = 0;
+
+      /** Update the pathWeight for each vertex except the 
+          startVertex. Notice that all vertices not adjacent 
+          to the startVertex  will have a pathWeight of 
+          infinity for now. */
+      for (int i = 0; i < numVertices; i++)
+      {
+         if (!visited[i])
+         {
+            pathWeight[i] = pathWeight[startIndex] + 
+                            wAdjMatrix[startIndex][i];
+            predecessor[i] = startIndex;
+            traversalMinHeap.addElement(new Double(pathWeight[i]));
+         }
+      }
+
+      do 
+      {
+         weight = (traversalMinHeap.removeMin()).doubleValue();
+         traversalMinHeap.removeAllElements();
+         if (weight == Double.POSITIVE_INFINITY)  // no possible path
             return resultList.iterator();
-        }
+         else 
+         {
+            index = getIndexOfAdjVertexWithWeightOf(visited, pathWeight, 
+                                                    weight);
+            visited[index] = true;
+         }
 
-        pathWeight[startIndex] = 0;
-        predecessor[startIndex] = -1;
-        visited[startIndex] = true;
-        weight = 0;
-
-        /**
-         * Update the pathWeight for each vertex except the startVertex. Notice
-         * that all vertices not adjacent to the startVertex will have a
-         * pathWeight of infinity for now.
-         */
-        for (int i = 0; i < numVertices; i++) {
-            if (!visited[i]) {
-                pathWeight[i] = pathWeight[startIndex] + wAdjMatrix[startIndex][i];
-                predecessor[i] = startIndex;
-                traversalMinHeap.addElement(new Double(pathWeight[i]));
-            }
-        }
-
-        do {
-            weight = (traversalMinHeap.removeMin()).doubleValue();
-            traversalMinHeap.removeAllElements();
-            if (weight == Double.POSITIVE_INFINITY) // no possible path
+         /** Update the pathWeight for each vertex that has has not been 
+             visited and is adjacent to the last vertex that was visited.
+             Also, add each unvisited vertex to the heap. */
+         for (int i = 0; i < numVertices; i++)
+         {
+            if (!visited[i])
             {
-                return resultList.iterator();
-            } else {
-                index = getIndexOfAdjVertexWithWeightOf(visited, pathWeight,
-                        weight);
-                visited[index] = true;
+               if((wAdjMatrix[index][i] < Double.POSITIVE_INFINITY) && (pathWeight[index] + wAdjMatrix[index][i]) < pathWeight[i])
+               {
+                  pathWeight[i] = pathWeight[index] + wAdjMatrix[index][i];
+                  predecessor[i] = index;
+               }        
+               traversalMinHeap.addElement(new Double(pathWeight[i]));
             }
+         }
+      } while (!traversalMinHeap.isEmpty() && !visited[targetIndex]);
 
-            /**
-             * Update the pathWeight for each vertex that has has not been
-             * visited and is adjacent to the last vertex that was visited.
-             * Also, add each unvisited vertex to the heap.
-             */
-            for (int i = 0; i < numVertices; i++) {
-                if (!visited[i]) {
-                    if ((wAdjMatrix[index][i] < Double.POSITIVE_INFINITY)
-                            && (pathWeight[index] + wAdjMatrix[index][i]) < pathWeight[i]) {
-                        pathWeight[i] = pathWeight[index] + wAdjMatrix[index][i];
-                        predecessor[i] = index;
-                    }
-                    traversalMinHeap.addElement(new Double(pathWeight[i]));
-                }
-            }
-        } while (!traversalMinHeap.isEmpty() && !visited[targetIndex]);
+      index = targetIndex;
+      stack.push(new Integer(index));
+      do
+      {
+         index = predecessor[index];
+         stack.push(new Integer(index));
+      } while (index != startIndex);
+      
+      while (!stack.isEmpty())
+          try {
+              resultList.addRear((stack.pop()));
+          } catch (EmptyCollectionException ex) {
+          }
 
-        index = targetIndex;
-        stack.push(new Integer(index));
-        do {
-            index = predecessor[index];
-            stack.push(new Integer(index));
-        } while (index != startIndex);
+      return resultList.iterator();
+   }
 
-        while (!stack.isEmpty()) {
-            try{
-                resultList.addRear((stack.pop()));
-            }catch(Exception ex){
-            }    
-        }
-        return resultList.iterator();
-    }
+   /******************************************************************
+     Returns the index of the the vertex that that is adjacent to
+     the vertex with the given index and also has a pathWeight equal
+     to weight.
+   ******************************************************************/
+   protected int getIndexOfAdjVertexWithWeightOf(boolean[] visited, double[] pathWeight, double weight)
+   {
+      for (int i = 0; i < numVertices; i++)
+         if ((pathWeight[i] == weight) && !visited[i])
+            for (int j = 0; j < numVertices; j++)
+               if ((wAdjMatrix[i][j] < Double.POSITIVE_INFINITY) && visited[j])
+                  return i;
 
-    /**
-     * ****************************************************************
-     * Returns the index of the the vertex that that is adjacent to the vertex
-     * with the given index and also has a pathWeight equal to weight.
-   *****************************************************************
-     */
-    protected int getIndexOfAdjVertexWithWeightOf(boolean[] visited, double[] pathWeight, double weight) {
-        for (int i = 0; i < numVertices; i++) {
-            if ((pathWeight[i] == weight) && !visited[i]) {
-                for (int j = 0; j < numVertices; j++) {
-                    if ((wAdjMatrix[i][j] < Double.POSITIVE_INFINITY)
-                            && visited[j]) {
-                        return i;
-                    }
-                }
-            }
-        }
+      return -1;  // should never get to here
+   }
 
-        return -1;  // should never get to here
-    }
+   /******************************************************************
+     Returns an iterator that contains the shortest path between
+     the two vertices.
+   ******************************************************************/
+   public Iterator<T> iteratorShortestPath(int startIndex, int targetIndex)
+   {
+      ArrayUnorderedList templist = new ArrayUnorderedList();
+      if (!indexIsValid(startIndex) || !indexIsValid(targetIndex))
+         return templist.iterator();
+
+      Iterator<Integer> it = iteratorShortestPathIndices(startIndex, 
+                             targetIndex);      
+      while (it.hasNext())
+         templist.addRear(vertices[(it.next()).intValue()]);
+      return templist.iterator();
+   }
+
+   /******************************************************************
+     Returns an iterator that contains the shortest path between
+     the two vertices.
+   ******************************************************************/
+   public Iterator<T> iteratorShortestPath(T startVertex, T targetVertex)
+   {
+      return iteratorShortestPath(getIndex(startVertex), 
+                                  getIndex(targetVertex));
+   }
 
     /**
      * Returns a minimum spanning tree of the network.
