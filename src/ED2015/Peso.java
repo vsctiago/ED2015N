@@ -7,17 +7,17 @@ package ED2015;
  */
 
 /**
- * Classe que identifica um caminho ou aresta com peso.
+ * Classe que identifica um peso.
  * @author Utilizador
  */
-public class Caminho {
+public class Peso {
     
     private double precoKm;
     private Hora[] horarios;
     private double distancia;
     private int duracao;
 
-    public Caminho(double precoKm, Hora[] horarios, double distancia, int duracao) {
+    public Peso(double precoKm, Hora[] horarios, double distancia, int duracao) {
         this.precoKm = precoKm;
         this.horarios = horarios;
         this.distancia = distancia;
